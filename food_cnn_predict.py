@@ -13,21 +13,47 @@ model.load_weights(model_weights_path)
 #Prediction on a new picture
 from keras.preprocessing import image as image_utils
 
-from PIL import Image
+from PIL import Image, ImageTk
 import requests
 from io import BytesIO
-
-response = requests.get('https://food.fnr.sndimg.com/content/dam/images/food/fullset/2016/5/11/0/FNM_060116-Double-Fried-French-Fries_s4x3.jpg.rend.hgtvcom.616.462.suffix/1463001459282.jpeg')
-test_image = Image.open(BytesIO(response.content))
-test_image = test_image.resize((128,128))
-#test_image = image_utils.load_img('dataset/test2.jpg', target_size=(128, 128))
-test_image = image_utils.img_to_array(test_image)
-test_image = np.expand_dims(test_image, axis=0)
+from tkinter import Tk,Label,Canvas,NW,Entry,Button 
+url = ''
+window = Tk()
+window.title("Welcome to Image predictor") 
+window.geometry('800x600')
+lbl = Label(window, text="URL")
+lbl.pack()
+def clicked(): 
+    global url
+    lbl.configure()
+    url  = (User_input.get())
+    print(url)
+    response = requests.get(url)
+    test_image = Image.open(BytesIO(response.content))
+    img = ImageTk.PhotoImage(test_image)
+    test_image = test_image.resize((128,128))  
+    pic = Label(image=img)
+    pic.pack()
+    pic.image = img
+    test_image = image_utils.img_to_array(test_image)
+    test_image = np.expand_dims(test_image, axis=0)
+    
  
-result = model.predict_on_batch(test_image)
-if result[0][0] == 1:
-    print('french fries')
-elif result[0][1] == 1:
-    print('pizza')
-elif result[0][2] == 1:
-    print('samosa')
+    result = model.predict_on_batch(test_image)
+
+    if result[0][0] == 1:
+        ans = 'french fries'
+    elif result[0][1] == 1:
+        ans = 'pizza'
+    elif result[0][2] == 1:
+        ans = 'samosa'
+    out = Label(window, text  = ans)
+    out.pack()
+
+User_input = Entry()
+User_input.pack()
+btn = Button(window, text="Detect Image", command=clicked)
+btn.pack()
+window.mainloop()
+
+
