@@ -39,26 +39,3 @@ if not os.path.exists(target_dir):
   os.mkdir(target_dir)
 classifier.save('./models/model.h5')
 classifier.save_weights('./models/weights.h5')
-
-#Prediction on a new picture
-from keras.preprocessing import image as image_utils
-import numpy as np
-
-from PIL import Image
-import requests
-from io import BytesIO
-
-response = requests.get('https://thumbs.dreamstime.com/z/pepperoni-pizza-thinly-sliced-popular-topping-american-style-pizzerias-30402134.jpg')
-test_image = Image.open(BytesIO(response.content))
-test_image = test_image.resize((128,128))
-#test_image = image_utils.load_img('dataset/test2.jpg', target_size=(128, 128))
-test_image = image_utils.img_to_array(test_image)
-test_image = np.expand_dims(test_image, axis=0)
- 
-result = classifier.predict_on_batch(test_image)
-if result[0][0] == 1:
-    print('french fries')
-elif result[0][1] == 1:
-    print('pizza')
-elif result[0][2] == 1:
-    print('samosa')
