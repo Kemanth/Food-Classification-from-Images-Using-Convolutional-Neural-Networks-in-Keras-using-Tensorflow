@@ -21,7 +21,7 @@ url = ''
 window = Tk()
 window.title("Welcome to Image predictor") 
 window.geometry('800x600')
-lbl = Label(window, text="URL")
+lbl = Label(window, text="Enter the URL of the image", font=("Helvetica", 16))
 lbl.pack()
 def clicked(): 
     global url
@@ -30,8 +30,9 @@ def clicked():
     print(url)
     response = requests.get(url)
     test_image = Image.open(BytesIO(response.content))
-    img = ImageTk.PhotoImage(test_image)
+    put_image = test_image.resize((400,400)) 
     test_image = test_image.resize((128,128))  
+    img = ImageTk.PhotoImage(put_image)
     pic = Label(image=img)
     pic.pack()
     pic.image = img
@@ -47,12 +48,12 @@ def clicked():
         ans = 'pizza'
     elif result[0][2] == 1:
         ans = 'samosa'
-    out = Label(window, text  = ans)
+    out = Label(window, text  = 'Predicted answer : ' +  ans, font=("Helvetica", 16))
     out.pack()
 
-User_input = Entry()
+User_input = Entry(width = 100)
 User_input.pack()
-btn = Button(window, text="Detect Image", command=clicked)
+btn = Button(window, text="Detect Image", font=("Helvetica", 12), command=clicked)
 btn.pack()
 window.mainloop()
 
